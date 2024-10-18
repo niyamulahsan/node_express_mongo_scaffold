@@ -1,15 +1,12 @@
 ## About Scaffold
-It is a node js backend scaffold. Here I use express js, mysql with sequelize ORM. You can see package.json for reference. Here I also use swagger for API tester. Its start with http://localhost:port/api-docs. Here has a example module which has basic crud operation. You can copy and paste module, rename it and add route into routes folder index file. You will get the API route into swagger. Please do necessary action with swagger part like change API route name and other things.
+It is a node js backend scaffold. Here I use express js, mysql with mongoose ODM. You can see package.json for reference. Here I also use swagger for API tester. Its start with http://localhost:port/api-docs. Here has a example module which has basic crud operation. You can copy and paste module, rename it and add route into routes folder index file. You will get the API route into swagger. Please do necessary action with swagger part like change API route name and other things.
 
 ## How to start
 
 - git clone repo
 - npm install
-- go to config folder (config->config.json)
-- change database name from development object
-- create database to mysql which is given into development object
-- npx sequelize-cli db:migrate --debug
-- npx sequelize-cli db:seed:all --debug
+- go to path with console
+- run "npm run data:import"
 - start with "npm run dev"
 
 
@@ -22,49 +19,85 @@ It is a node js backend scaffold. Here I use express js, mysql with sequelize OR
 - if need new module, please copy example module and change it for your work criteria
 - it has integrated nodemailer setup in global section for send mail
 
-## Sequelize ORM some command
+## mongo shell command ##
+===================
 
-**Step 1:**
+**step-1: showing database**
 ```
-npx sequelize-cli init
-```
-
-**Step 2: creates migration with models**
-```
-npx sequelize-cli model:generate --name migration-name --attributes name:string
+show dbs
 ```
 
-**Step 3: do the migrations now (creating tables in database)**
+**step-2: database create**
 ```
-npx sequelize-cli db:migrate --debug
-```
-
-**step 4 (Optional): drop all tables**
-```
-npx sequelize-cli db:migrate:undo:all --debug
+use dbname
 ```
 
-**step 5 (Optional): drop single table**
+**step-3: it will show previous dbs** 
 ```
-npx sequelize-cli db:migrate:undo --name migration_file_name.js
-```
-
-**step 6 (Optional): migrate single table**
-```
-npx sequelize-cli db:migrate --name migration_file_name.js
+show dbs
 ```
 
-**step 7: create seeders (initial data for database tables)**
+**step-4: it will switch and show current db** 
 ```
-npx sequelize-cli seed:generate --name seeder-name
-```
-
-**step 8: push seeders data to database**
-```
-npx sequelize-cli db:seed:all --debug
+db
 ```
 
-**step 9 (Optional): drop all seeders data**
+**stepp-5: create table and insert one data where collection_name will be table name**
 ```
-npx sequelize-cli db:seed:undo:all --debug
+db.collection_name.insertOne({name: 'xyz', age: '24', mobile: '+8801711000000'});
+```
+
+**step-6: show all collection_name table data**
+```
+db.collection_name.find()
+```
+
+**step-7: it will show as better format json data**
+```
+db.collection_name.find().pretty()
+```
+
+**setp-8: multiple data insert in same time**
+```
+db.collection_name.insertMany({}, {})
+```
+
+**setp-9: find specific data, it will be single or multiple. you can add pretty() in last. but findOne has not pretty function. so don't use findOne({}).pretty()**
+```
+db.collection_name.find({key:'value'})
+```
+
+**step-10: find specific data without some key:value, this is called projection. if we want those key show it will 1 or hide it will be 0**
+```
+db.collection_name.find({key:'value'}, {key: '0/1'}).pretty()
+```
+
+**step-11: if we want single data pass value to limit() function**
+```
+db.collection_name.find({key:'value'}).pretty().limit(1)
+```
+
+**step-12: if we want second single data pass value to limit() then skip() function**
+```
+db.collection_name.find({key:'value'}).pretty().limit(1).skip(1)
+```
+
+**setp-13: if you want to update a record use db.collection_name.uppdateOne({key: 'value'}, {$set: {key:'value'}})**
+```
+db.collection_name.uppdateOne({key: 'value'}, {$set: {key:'value'}})
+```
+
+**step-14: if you want to update many record use db.collection_name.uppdateMany({}, {$set: {key:'value'}}). don't any key value into first object if all key:value set uppdate**
+```
+db.collection_name.uppdateMany({}, {$set: {key:'value'}})
+```
+
+**step-15: if you want to delete one use db.collection_name.deleteOne({key:'value'})**
+```
+db.collection_name.deleteOne({key:'value'})
+```
+
+**step-15:if you want to delete many use db.collection_name.deleteMany({key:'value'})**
+```
+db.collection_name.deleteMany({key:'value'})
 ```
