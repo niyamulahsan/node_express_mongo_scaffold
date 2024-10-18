@@ -1,5 +1,5 @@
 ## About Scaffold
-It is a node js backend scaffold. Here I use express js, mysql with mongoose ODM. You can see package.json for reference. Here I also use swagger for API tester. Its start with http://localhost:port/api-docs. Here has a example module which has basic crud operation. You can copy and paste module, rename it and add route into routes folder index file. You will get the API route into swagger. Please do necessary action with swagger part like change API route name and other things.
+It is a node js backend scaffold. Here I use express js, mongo with mongoose ODM. You can see package.json for reference. Here I also use swagger for API tester. Its start with http://localhost:port/api-docs. Here has a example module which has basic crud operation. You can copy and paste module, rename it and add route into routes folder index file. You will get the API route into swagger. Please do necessary action with swagger part like change API route name and other things.
 
 ## How to start
 
