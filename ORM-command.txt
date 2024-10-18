@@ -1,0 +1,81 @@
+mongo shell command
+===================
+/**
+* showing database
+*/
+step-1: show dbs
+
+/**
+* database create
+*/
+step-2: use dbname
+
+/**
+* it will show previous dbs
+*/
+step-3: show dbs
+
+/**
+* it will switch and show current db
+*/
+step-4: db
+
+/**
+* create table and insert one data where collection_name will be table name
+*/
+stepp-5: db.collection_name.insertOne({name: 'xyz', age: '24', mobile: '+8801711000000'});
+
+/**
+* show all collection_name table data
+*/
+step-6: db.collection_name.find()
+
+/**
+* it will show as better format json data
+*/
+step-7: db.collection_name.find().pretty()
+
+/**
+* multiple data insert in same time
+*/
+setp-8: db.collection_name.insertMany({}, {})
+
+/**
+* find specific data, it will be single or multiple. you can add pretty() in last. but findOne has not pretty function. so don't use findOne({}).pretty()
+*/
+setp-9: db.collection_name.find({key:'value'})
+
+/**
+* find specific data without some key:value, this is called projection. if we want those key show it will 1 or hide it will be 0
+* step-10: db.collection_name.find({key:'value'}, {key: '0/1'}).pretty()
+*/
+
+/**
+* if we want single data pass value to limit() function
+*/
+step: 11: db.collection_name.find({key:'value'}).pretty().limit(1)
+
+/**
+* if we want second single data pass value to limit() then skip() function
+*/
+step: 12: db.collection_name.find({key:'value'}).pretty().limit(1).skip(1)
+
+/**
+* if you want to update a record use db.collection_name.uppdateOne({key: 'value'}, {$set: {key:'value'}})
+*/
+setp-13: db.collection_name.uppdateOne({key: 'value'}, {$set: {key:'value'}})
+
+/**
+* if you want to update many record use db.collection_name.uppdateMany({}, {$set: {key:'value'}}). don't any key value into first object if all key:value set uppdate
+*/
+step-14: db.collection_name.uppdateMany({}, {$set: {key:'value'}})
+
+/**
+* if you want to delete one use db.collection_name.deleteOne({key:'value'})
+*/
+step-15: db.collection_name.deleteOne({key:'value'})
+
+/**
+* if you want to delete many use db.collection_name.deleteMany({key:'value'})
+*/
+step-15: db.collection_name.deleteMany({key:'value'})
