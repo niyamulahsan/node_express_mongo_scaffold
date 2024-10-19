@@ -26,7 +26,7 @@ auth.register = async (req, res, next) => {
 
     data.status = "active";
     data.forget_password = req.body.password;
-    data.role_id = role.id;
+    data.role = role.id;
 
     delete data["confirm_password"];
 
@@ -52,7 +52,7 @@ auth.login = async (req, res, next) => {
       return res.status(400).json({ "msg": "Invalid credential" });
     }
 
-    const userdata = await User.findOne({ email: data.email }).populate('role_id');
+    const userdata = await User.findOne({ email: data.email }).populate('role');
 
     console.log(userdata);
 
@@ -70,7 +70,7 @@ auth.login = async (req, res, next) => {
       return res.status(400).json({ "msg": "Invalid credential" });
     }
 
-    const token = jwt.sign({ id: userdata.id, email: userdata.email, role: userdata.role_id, status: userdata.status }, process.env.TOKEN_SECRET, {
+    const token = jwt.sign({ id: userdata.id, email: userdata.email, role: userdata.role, status: userdata.status }, process.env.TOKEN_SECRET, {
       expiresIn: process.env.TOKEN_EXPIRE,
     });
 
@@ -129,7 +129,7 @@ auth.forgetPassword = async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // SEND EMAIL
-  const resetUrl = `${req.protocol}://${req.get('host')}/api/resetpassword/${resetToken}`;
+  const resetUrl = `${req.protocol}://${req.get('host')}/resetpassword/${resetToken}`;
   const message = `We have received a password reset request. Please use the below link to reset your password\n\n${resetUrl}\n\nThis reset password link will be valid only for 10 minutes.`;
 
   try {
@@ -172,7 +172,7 @@ auth.resetPassword = asyncErrorHandler(async (req, res, next) => {
   user.save({ validateBeforeSave: false });
 
   // 3. LOGIN THE USER
-  const loginToken = jwt.sign({ id: user.id, email: user.email, role: user.role_id, status: user.status }, process.env.TOKEN_SECRET, {
+  const loginToken = jwt.sign({ id: user.id, email: user.email, role: user.role, status: user.status }, process.env.TOKEN_SECRET, {
     expiresIn: process.env.TOKEN_EXPIRE,
   });
 

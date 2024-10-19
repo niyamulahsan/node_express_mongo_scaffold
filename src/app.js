@@ -2,19 +2,18 @@ const path = require("path");
 const express = require("express");
 const app = express();
 const upload = require("express-fileupload");
+const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const serveIndex = require("serve-index");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
-const nodeMailer = require("nodemailer");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
 
 // internal import
 const { notFoundHandler, defaultErrorHandler } = require("./middleware/errorhandler");
 const routes = require("./routes/index");
-const authentication = require("./middleware/authentication"); // currently not use in app.js
 
 // request handler
 app.use(express.json());
@@ -32,12 +31,6 @@ app.use(cors({
 
 // cookie parser
 app.use(cookieParser());
-
-// serve index
-app.use("/public", express.static(path.join("/public")), serveIndex(path.join(__dirname, "/public"), { icons: true }));
-
-// upload file setup
-app.use(upload());
 
 // swagger setup must before router setup
 const options = {
@@ -77,8 +70,21 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(openapiSpecification, {
   }
 }));
 
+// rate limiter for api request
+const limiter = rateLimit({
+  max: 60,
+  windowMs: 60 * 1000,
+  message: "Too many request from this IP, please trye again after 1 minute later"
+});
+
+// serve index
+app.use("/public", express.static(path.join("/public")), serveIndex(path.join(__dirname, "/public"), { icons: true }));
+
+// upload file setup
+app.use(upload());
+
 // router setup
-app.use("/api", routes);
+app.use("/api", limiter, routes);
 
 // home route
 app.use("/", (req, res) => {
