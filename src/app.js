@@ -6,9 +6,8 @@ const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const serveIndex = require("serve-index");
-const swaggerUI = require("swagger-ui-express");
-const swaggerJsdoc = require("swagger-jsdoc");
 const morgan = require("morgan");
+const { swaggerServe, swaggerSetup } = require("./global/swaggerSetup");
 const connectDB = require("./config/db");
 
 // internal import
@@ -33,42 +32,7 @@ app.use(cors({
 app.use(cookieParser());
 
 // swagger setup must before router setup
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Node Express Scaffold",
-      version: "1.0.0",
-      description: "Scaffold server end",
-      contact: {
-        email: "niyamulahsan@gmail.com",
-      },
-    },
-    basePath: "/",
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "jwt",
-        },
-      },
-    },
-    servers: [{
-      url: `http://localhost:${process.env.PORT}`,
-    }]
-  },
-  apis: ["./src/modules/**/*.js"],
-};
-
-const openapiSpecification = swaggerJsdoc(options);
-
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(openapiSpecification, {
-  swaggerOptions: {
-    filter: true,
-    docExpression: "list",
-  }
-}));
+app.use("/api-docs", swaggerServe, swaggerSetup);
 
 // rate limiter for api request
 const limiter = rateLimit({
