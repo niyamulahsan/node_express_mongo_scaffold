@@ -31,6 +31,9 @@ app.use(cors({
 // cookie parser
 app.use(cookieParser());
 
+// upload file setup
+app.use(upload());
+
 // swagger setup must before router setup
 app.use("/api-docs", swaggerServe, swaggerSetup);
 
@@ -43,9 +46,6 @@ const limiter = rateLimit({
 
 // serve index
 app.use("/public", express.static(path.join("/public")), serveIndex(path.join(__dirname, "/public"), { icons: true }));
-
-// upload file setup
-app.use(upload());
 
 // router setup
 app.use("/api", limiter, routes);

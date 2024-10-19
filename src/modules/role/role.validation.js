@@ -11,11 +11,7 @@ role.storeschema = [ // currently not use in route
     .withMessage("Max 20 char")
     .bail()
     .custom(async (value) => {
-      const checkdata = await Example.findOne({
-        where: Sequelize.where(Sequelize.fn("lower", Sequelize.col("name")), {
-          [Op.eq]: value.trim().toLowerCase(),
-        }),
-      });
+      const checkdata = await Role.findOne({ name: { $regex: `.*${value}.*`, $options: 'i' } });
 
       if (checkdata) {
         return Promise.reject("Already exists");
@@ -31,11 +27,7 @@ role.updatechema = [ // currently not use in route
     .isLength({ max: 20 })
     .withMessage("Max 20 char")
     .custom(async (value) => {
-      const checkdata = await Example.findOne({
-        where: Sequelize.where(Sequelize.fn("lower", Sequelize.col("name")), {
-          [Op.eq]: value.trim().toLowerCase(),
-        }),
-      });
+      const checkdata = await Role.findOne({ name: { $regex: `.*${value}.*`, $options: 'i' } });
 
       if (checkdata) {
         return Promise.reject("Already exists");
