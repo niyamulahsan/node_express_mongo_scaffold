@@ -1,44 +1,67 @@
 const { check } = require("express-validator");
-const User = require("../../models/userSchema");
+const User = require("../../database/models/userSchema");
 
 const auth = {};
 
 auth.storeschema = [
-  check("email").notEmpty().withMessage("Email is required").bail().isEmail().withMessage("Invalid email").custom(async (value) => {
-    const foundEmail = await User.findOne({ email: value });
+	check("email")
+		.notEmpty()
+		.withMessage("Email is required")
+		.bail()
+		.isEmail()
+		.withMessage("Invalid email")
+		.custom(async (value) => {
+			const foundEmail = await User.findOne({ email: value });
 
-    if (foundEmail) {
-      return Promise.reject("Email already exists");
-    }
-  }),
-  check("password").notEmpty().withMessage("Password is required"),
-  check("confirm_password").notEmpty().withMessage("Confirm Password required").bail().custom((value, { req, res }) => {
-    if (req.body.password !== value) {
-      return Promise.reject();
-    }
-    return Promise.resolve();
-  }).withMessage("Password not matched!"),
+			if (foundEmail) {
+				return Promise.reject("Email already exists");
+			}
+		}),
+	check("password").notEmpty().withMessage("Password is required"),
+	check("confirm_password")
+		.notEmpty()
+		.withMessage("Confirm Password required")
+		.bail()
+		.custom((value, { req, res }) => {
+			if (req.body.password !== value) {
+				return Promise.reject();
+			}
+			return Promise.resolve();
+		})
+		.withMessage("Password not matched!"),
 ];
 
 auth.forgetschema = [
-  check("email").notEmpty().withMessage("Email required").bail().isEmail().withMessage("Invalid format").bail().custom(async (value, { req, res }) => {
-    const user = await User.findOne({ email: value });
-    if (!user.email == req.body.email) {
-      return Promise.reject("Email not found");
-    }
+	check("email")
+		.notEmpty()
+		.withMessage("Email required")
+		.bail()
+		.isEmail()
+		.withMessage("Invalid format")
+		.bail()
+		.custom(async (value, { req, res }) => {
+			const user = await User.findOne({ email: value });
+			if (!user.email == req.body.email) {
+				return Promise.reject("Email not found");
+			}
 
-    return Promise.resolve();
-  })
+			return Promise.resolve();
+		}),
 ];
 
 auth.resetschema = [
-  check("password").notEmpty().withMessage("Password required"),
-  check("confirm_password").notEmpty().withMessage("Confirm Password required").bail().custom((value, { req, res }) => {
-    if (req.body.password !== value) {
-      return Promise.reject();
-    }
-    return Promise.resolve();
-  }).withMessage("Password not matched!"),
+	check("password").notEmpty().withMessage("Password required"),
+	check("confirm_password")
+		.notEmpty()
+		.withMessage("Confirm Password required")
+		.bail()
+		.custom((value, { req, res }) => {
+			if (req.body.password !== value) {
+				return Promise.reject();
+			}
+			return Promise.resolve();
+		})
+		.withMessage("Password not matched!"),
 ];
 
 module.exports = auth;
